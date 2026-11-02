@@ -561,7 +561,8 @@ function M.translate_markdown(lines, opts, cb)
     local tr = opts.cfg or require("language.config").get().translate or {}
     if tr.run_id == nil then
       -- one run per document: the engine's budget (the ai bulk label) holds for all of its calls
-      tr = vim.tbl_extend("force", tr, { run_id = require("language.translate.chunk").new_run_id() })
+      tr =
+        vim.tbl_extend("force", tr, { run_id = require("language.translate.chunk").new_run_id() })
     end
     local st = settings(tr, opts)
 

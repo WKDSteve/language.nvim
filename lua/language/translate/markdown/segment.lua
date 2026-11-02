@@ -572,7 +572,9 @@ function M.segment(lines, tick)
     local function cell(a, b)
       -- A very long row is one line to the loop below: hand the control back inside it.
       cells = cells + 1
-      if tick and cells % 1024 == 0 then tick() end
+      if tick and cells % 1024 == 0 then
+        tick()
+      end
       local seg_text = rest:sub(a, b)
       local lead, body = seg_text:match("^([ \t]*)(.*)$")
       local content, tail = trim_right(body)

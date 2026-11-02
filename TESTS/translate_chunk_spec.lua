@@ -1285,10 +1285,7 @@ return function(H)
     local doubled = function(line)
       return #line * 2
     end
-    local bl = chunk.split(
-      { "aaaa", "bbbb", "cccc", "dddd" },
-      { max_bytes = 10, cost = doubled }
-    )
+    local bl = chunk.split({ "aaaa", "bbbb", "cccc", "dddd" }, { max_bytes = 10, cost = doubled })
     H.eq(#bl, 4, "split(): cost 8 per line under a budget of 10 is one line per block")
     local plain = chunk.split({ "aaaa", "bbbb", "cccc", "dddd" }, { max_bytes = 10 })
     H.eq(#plain, 2, "(without a cost function the same lines pair up)")
@@ -1318,9 +1315,13 @@ return function(H)
       "aaaaaaa，;bbb",
       "and the line is cut right after it"
     )
-    local beyond, err = chunk.split({ "aaaaaaaa，bbb" }, { max_bytes = 11 })
+    local beyond, beyond_err = chunk.split({ "aaaaaaaa，bbb" }, { max_bytes = 11 })
     H.ok(beyond == nil, "a clause mark ending one byte past the budget is no boundary")
-    H.contains(err or "", "no sentence or word boundary", "so the line is refused, not cut inside it")
+    H.contains(
+      beyond_err or "",
+      "no sentence or word boundary",
+      "so the line is refused, not cut inside it"
+    )
   end
 
   package.loaded["language.util.job"] = real_job
