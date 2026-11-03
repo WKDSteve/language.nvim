@@ -63,12 +63,19 @@ jobs:
       # lib.nvim is a real runtime dependency -- several modules require it at
       # module load -- so the suite cannot run without it. Checked out as a
       # sibling, which is the layout scripts/test.sh resolves (../lib.nvim).
-      # ui.nvim is deliberately NOT checked out: the suite must stay green
-      # without it (see TESTS/README.md, "Deliberately left untested").
       - uses: actions/checkout@v5
         with:
           repository: WKDSteve/lib.nvim
           path: lib.nvim
+          ref: ci-verified
+
+      # ui.nvim: spell/ui/panel.lua and item_menu.lua require ui.kit at load,
+      # and translate/window.lua opens its pickers through it; their specs run
+      # against the real kit. Same sibling checkout as lib.nvim.
+      - uses: actions/checkout@v5
+        with:
+          repository: WKDSteve/ui.nvim
+          path: ui.nvim
           ref: ci-verified
 
       - uses: rhysd/action-setup-vim@v1

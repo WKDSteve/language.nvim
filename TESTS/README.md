@@ -43,7 +43,8 @@ misleading failures.
 | `regions_spec.lua` | turning a scope into concrete byte/line ranges to scan |
 | `native_spec.lua` | the native `:spellgood`/`z=`-backed provider |
 | `collect_spec.lua` | gathering issues across providers/scopes and de-duplicating them |
-| `spell_ui_spec.lua` | `ui/highlights.lua` and `ui/list.lua` (the two spell UI modules that do not require `ui.kit`) — diagnostic namespace, the per-buffer `max` cap |
+| `spell_ui_spec.lua` | `ui/highlights.lua` and `ui/list.lua` — diagnostic namespace, the per-buffer `max` cap |
+| `spell_ui_kit_spec.lua` | `ui/item_menu.lua` and `ui/panel.lua` against the real `ui.kit` (ui.nvim is a suite dependency): which actions a spelling vs a grammar issue offers, each action's call into the core and `on_done`, the suggestion picker (and an empty choice), the panel rows/title, the buffer-local direct keys (`a`, `i`, `I`, `L`, `gd`, `o`, `?`), `on_cancel` clearing the diagnostics; only the window-opening kit calls and the mutating core actions are replaced by recorders |
 | `live_spec.lua` | debounced live re-scanning on buffer change |
 | `wordlists_spec.lua` | the built-in programming dictionary and extra-wordlist merging; `session_words`: a batch costs two `:spellgood!` commands instead of one per word, known words are not re-added (the counter drains the scheduled flush first, so these zero-command checks can really fail), invalid entries are dropped (also blank-only, U+FEFF and trailing-slash entries at either end of a batch, which would break the first/last-word handshake), the per-word fallback (list file not found, or a wrong file found) still lands every word, and with no temp dir at all the lookup returns nil and never touches the working directory |
 | `job_spec.lua` | `util/job`: argv/opts plumbing, `on_done`, a spawn failure reported through `on_done`, `cancel()` before completion suppressing it, and the Windows `cmd.exe /c` guard (a `.cmd`/`.bat` launcher is refused when an argument holds a quote, `%`, `^`, `&`, `\|`, `<`, `>` or a line break; the platform is injected, so it runs everywhere) |
@@ -73,7 +74,7 @@ misleading failures.
 | `usrcmds_help_spec.lua` | every flag and positional argument of `:Translate`/`:TranslateReplace`/`:Spellcheck` has a line in lib.nvim's option float: `composer.help.undocumented(<verb>, { args = true })` is empty, the four argument-type texts and every flag / enum-value text keep the house style (one line, at most 80 characters, no trailing period), and the texts say what the code does (`--nocode` skips whole lines with inline code and is ignored for `cword`/`cwd`/`path=<p>`; `path=<p>` is a file or directory) |
 | `bindings_keymaps_autocmds_spec.lua` | keymap registration for spell/translate/thesaurus, and the autocmd wiring (including the live-scan debounce arm/disarm and the write guard) |
 | `language_init_spec.lua` | `language.setup()` end to end — command registration gating, idempotency, the lazy `M.health` facade, and the programming_dict/extra_wordlists gate |
-| `spell_init_spec.lua` | the top-level `language.spell` facade — starting/closing a session, `:Spellcheck`'s scope dispatch, panel stubbed (see "Deliberately left untested") |
+| `spell_init_spec.lua` | the top-level `language.spell` facade — starting/closing a session, `:Spellcheck`'s scope dispatch, panel stubbed (`spell_ui_kit_spec.lua` covers the panel itself) |
 | `config_spec.lua` | the merge, and that `DEFAULTS` survives it unmutated |
 | `hover_spec.lua` | the word under the cursor as a hover.nvim float — the word finder, the target language, decline-vs-fail, the rate-limit failure path, and `on_request` registration (translate provider and hover.nvim both stubbed) |
 | `health_spec.lua` | `:checkhealth language` (`M.check()`) branch by branch: version/native-provider detection, every optional-tool present/absent pair (including the cspell-without-node middle case), the attached-grammar-client list, deepl-key resolution, the effective-config echo, and `check_hover()`'s four states — with every collaborator (tools, LSP clients, hover.nvim, which-key, `lib.nvim.deps.health`) stubbed or monkeypatched; also the old-lib.nvim case (no composer module: one warning, the tail skipped, no crash) and the ui.nvim line (warn without, ok with) |
@@ -97,7 +98,7 @@ the restore function.
 ## Coverage
 
 Every `lua/language/**/*.lua` file with real logic or branching that can be
-required without `ui.kit` now has a dedicated real-assertion spec: both spell
+required (the spell panel and item menu with the real `ui.kit`) now has a dedicated real-assertion spec: both spell
 cores (split/scope/regions/collect/cache/ignore/actions), the native,
 CLI/LSP, and persistent-sidecar spell providers, live scanning, the
 wordlists, `util/job`, every translate provider plus the registry's fallback
@@ -126,19 +127,11 @@ inline. As of this audit:
 
 ### Deliberately left untested
 
-- **`spell/ui/panel.lua`, `spell/ui/item_menu.lua`** — both `require("ui.kit")`
-  at module load. This repo's CI (`.github/workflows/ci.yml`) checks out only
-  `lib.nvim` as a sibling, not `ui.nvim`/`ui.kit` — so a spec that so much as
-  `require`s either module would pass locally (where a `ui.nvim` checkout
-  happens to be on disk) and fail in CI. `spell_init_spec.lua` stubs
-  `language.spell.ui.panel` in `package.loaded` purely so `M.clear()`'s call
-  into it does not error; the panel's own rendering logic is not exercised.
-- **`translate/window.lua`** — the interactive `:Translate` (bang) window.
-  `require("ui.kit")` is lazy (inside its functions, not at module top), so it
-  does not fail CI's module-load, but exercising its actual picker/prompt flow
-  needs `ui.kit` regardless. `bindings_usrcmds_spec.lua` only stubs it as a
-  collaborator to assert that the bang form reaches it instead of
-  `translate.run`.
+- **`translate/window.lua`** — the interactive `:Translate` (bang) window:
+  `translate_window_spec.lua` covers the debounced refresh and `close()`; the
+  window's keys (`<C-l>`, `<C-r>`, `<C-y>`) and its retarget picker are still
+  not exercised. `bindings_usrcmds_spec.lua` stubs it as a collaborator to
+  assert that the bang form reaches it instead of `translate.run`.
 - **`config/DEFAULTS.lua`** — a plain data table (`return { ... }`); its merge
   behavior is what `config_spec.lua` actually tests.
 - **`@types` modules** (`language/@types`, `config/@types`,
