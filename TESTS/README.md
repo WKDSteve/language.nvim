@@ -67,6 +67,7 @@ misleading failures.
 | `translate_markdown_curl_spec.lua` | the placeholder over the REAL curl path: the full pipeline (registry, chunk wrapper, `custom` engine, `util/job`, a curl process) against a loopback HTTP server in the spec's own editor; skipped without curl |
 | `translate_custom_stdin_curl_spec.lua` | non-ASCII text (umlaut, CJK, `⟦⟧`) over the `custom` engine's `stdin` field and a REAL curl arrives at a loopback server as UTF-8, and an argv element leaves the editor as exact UTF-8 (checked with an nvim child); skipped without curl |
 | `translate_init_spec.lua` | `translate.run`'s scope handling and buffer replace |
+| `translate_window_keys_spec.lua` | the interactive window's keys against the real `ui.kit`: the target picker of `open()`, `<C-l>` retarget (title, refresh, empty target ignored), `<C-r>` reverse (nothing while the output is empty, output becomes input, next target asked), `<C-y>` copy and history record, `<C-h>` history entry, `q` close; picker, refresh and history file are recorders |
 | `translate_motion_spec.lua` | the operator/motion entry point into translate |
 | `translate_files_spec.lua` | `translate.files.process`/`run` against a fake provider — suffix/replace/buffers output modes, error handling, and the early-return guards, all without reaching `ui.kit`'s file picker |
 | `thesaurus_spec.lua` | looking up and applying a synonym under the cursor, off the `ui.kit` picker branch |
@@ -127,11 +128,6 @@ inline. As of this audit:
 
 ### Deliberately left untested
 
-- **`translate/window.lua`** — the interactive `:Translate` (bang) window:
-  `translate_window_spec.lua` covers the debounced refresh and `close()`; the
-  window's keys (`<C-l>`, `<C-r>`, `<C-y>`) and its retarget picker are still
-  not exercised. `bindings_usrcmds_spec.lua` stubs it as a collaborator to
-  assert that the bang form reaches it instead of `translate.run`.
 - **`config/DEFAULTS.lua`** — a plain data table (`return { ... }`); its merge
   behavior is what `config_spec.lua` actually tests.
 - **`@types` modules** (`language/@types`, `config/@types`,
