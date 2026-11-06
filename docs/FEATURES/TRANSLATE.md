@@ -638,6 +638,10 @@ translates each — writing a language-suffixed sibling file by default
 or opening scratch buffers with `--files=buffers`.
 `:TranslateReplace <lang> cwd` forces file-mode `replace`.
 
+The files offered are those with an extension of `translate.files.extensions`
+and no larger than `translate.files.max_kb` (default `512` KB); `translate.files.output`
+(`suffix`, `replace` or `buffers`) is the default for `--files=<mode>`.
+
 `path=<p>` accepts a file or a directory (`~` and environment variables are
 expanded). A single file (`path=README.md`) skips the chooser and is
 translated the same way, with the same output modes; `:TranslateReplace`
