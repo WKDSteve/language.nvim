@@ -91,3 +91,20 @@ question each page answers.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 language.nvim is released under the [MIT License](https://opensource.org/licenses/MIT).
+
+<!-- connections:begin (written by the app-icons tool of the workshop; change integrations.json there, not this block) -->
+## Connections
+
+![language.nvim: what it uses and what uses it](assets/graphs/language.nvim.png)
+
+**Uses**
+
+- [ai.nvim](https://github.com/WKDSteve/ai.nvim): The translation of language.nvim can use ai.nvim as its engine, and reads its provider and its allow-list policy to decide what may be sent. ([picture](assets/graphs/pair/language.nvim--ai.nvim.png))
+- [hover.nvim](https://github.com/WKDSteve/hover.nvim): language.nvim registers a preview with hover.nvim (`hover.registry`) when it is installed. ([picture](assets/graphs/pair/language.nvim--hover.nvim.png))
+- [ui.nvim](https://github.com/WKDSteve/ui.nvim): The spell panel and the item menu of language.nvim are built on the kit of ui.nvim (`ui.kit`). ([picture](assets/graphs/pair/language.nvim--ui.nvim.png))
+- [lib.nvim](https://github.com/WKDSteve/lib.nvim): the shared base of the plugins.
+
+**Used by**
+
+- [mdview.nvim](https://github.com/WKDSteve/mdview.nvim): mdview.nvim translates the preview of a Markdown document with language.nvim (`translate_markdown`) when it is installed. ([picture](assets/graphs/pair/mdview.nvim--language.nvim.png))
+<!-- connections:end -->
