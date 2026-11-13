@@ -29,8 +29,10 @@ return {
     -- the run.
     -- (isolated = "file" was kept off because spell_init_spec needed a downloaded spell file for "de"
     -- in the developer's real stdpath('data'). That reason is gone: the spec now compiles a fixture
-    -- dictionary with :mkspell (TESTS/spell_init_spec.lua). A switch to "file" has not been
-    -- re-verified, so the setting stays "none" for now.)
+    -- dictionary with :mkspell (TESTS/spell_init_spec.lua). Tried 2026-11-13: under "file" the suite
+    -- is green (50/50, ~12 s slower), but the surface gate goes red: API calls made inside the per-file
+    -- child editors are not counted, so api:language.translate_markdown drops from hit to missing. The
+    -- setting stays "none" until testing.nvim counts API hits in child editors.)
     state = "error",
   },
   guard_allow = {
