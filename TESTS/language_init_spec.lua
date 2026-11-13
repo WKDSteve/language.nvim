@@ -30,8 +30,9 @@ return function(H)
     end
 
     -- A clean slate regardless of what other specs registered first: this spec
-    -- asserts on presence/absence of the three commands, so it cannot rely on
-    -- run.lua's ordering to guarantee none of them exist yet.
+    -- asserts on presence/absence of the three commands, and with isolated = "none"
+    -- all spec files share one editor, so it cannot rely on the order the runner
+    -- loads them in to guarantee none of them exist yet.
     for _, name in ipairs({ "Spellcheck", "Translate", "TranslateReplace", "TranslateOffice" }) do
       pcall(vim.api.nvim_del_user_command, name)
     end

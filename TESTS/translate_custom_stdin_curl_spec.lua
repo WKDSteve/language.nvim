@@ -4,10 +4,11 @@
 -- ANSI code page for such a program. C:\Windows\System32\curl.exe and a Neovim child get exact UTF-8, so the editor
 -- side is right and only the program decides. The cure is the `stdin` field of the argv the `cmd` returns: stdin
 -- carries the bytes as they are. This spec pins both halves against a loopback HTTP server inside this Neovim (no
--- external network). Skipped without curl.
+-- external network). Not applicable (n/a) without curl.
 
 return function(H)
   if vim.fn.executable("curl") ~= 1 then
+    print("n/a  translate_custom_stdin_curl_spec needs curl")
     return
   end
 

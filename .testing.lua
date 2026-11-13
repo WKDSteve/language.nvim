@@ -27,8 +27,10 @@ return {
     -- :Commands, keymaps, autocmds or changes an option wraps itself in H.tracked() (TESTS/harness.lua),
     -- which puts all of it back, also when an assertion fails half-way. A spec that leaks again fails
     -- the run.
-    -- (isolated = "file" stays off: spell_init_spec needs a downloaded spell file for "de" in the
-    -- developer's real stdpath('data'); a hermetic child gets the "Download? [y/N]" prompt and fails.)
+    -- (isolated = "file" was kept off because spell_init_spec needed a downloaded spell file for "de"
+    -- in the developer's real stdpath('data'). That reason is gone: the spec now compiles a fixture
+    -- dictionary with :mkspell (TESTS/spell_init_spec.lua). A switch to "file" has not been
+    -- re-verified, so the setting stays "none" for now.)
     state = "error",
   },
   guard_allow = {

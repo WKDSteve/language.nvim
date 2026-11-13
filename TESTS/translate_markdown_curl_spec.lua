@@ -4,10 +4,12 @@
 -- ASCII `{n}` for none. This spec runs the whole pipeline (registry, chunk wrapper,
 -- the `custom` engine, util/job, a real curl process) against a loopback HTTP
 -- server inside this Neovim, so no external network is involved. The text travels
--- as an argv element, the very path of the incident. Skipped without curl.
+-- as an argv element, the very path of the incident. Not applicable (n/a) without
+-- curl.
 
 return function(H)
   if vim.fn.executable("curl") ~= 1 then
+    print("n/a  translate_markdown_curl_spec needs curl")
     return
   end
 
