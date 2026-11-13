@@ -6,7 +6,7 @@
 -- reached the engine can be told from one that did not.
 
 return function(H)
-  -- Every spec file shares one editor: put back what this one creates, also on failure (see H.tracked).
+  -- Put back what this spec creates, also on failure (see H.tracked): the state guard reports a leak.
   H.tracked(function()
     local subtitle = require("language.translate.subtitle")
     local filter = require("language.translate.filter")

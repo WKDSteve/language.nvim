@@ -14,7 +14,13 @@ return {
   deps = { "lib.nvim", "ui.nvim" },
   -- "none" = all specs in one nvim, "file" = one nvim per spec file
   -- (nothing leaks from one file into the next).
-  isolated = "none",
+  -- "file": it used to be "none" because spell_init_spec needed a downloaded spell file for "de" in the
+  -- developer's real stdpath('data') (the spec now compiles a fixture dictionary with :mkspell), and then
+  -- because testing.nvim did not count API calls made inside the per-file child editors (the surface gate
+  -- lost api:language.translate_markdown). testing.nvim counts them now (f55ace4); the suite is green under
+  -- "file" (2026-11-13, ~12 s slower than "none": one editor start per file, the price of no leak between
+  -- files).
+  isolated = "file",
   -- Guards (see testing.nvim's docs/GUARDS.md). Measured on this suite: every guard is clean with the
   -- allowlist below.
   guards = {
@@ -27,12 +33,6 @@ return {
     -- :Commands, keymaps, autocmds or changes an option wraps itself in H.tracked() (TESTS/harness.lua),
     -- which puts all of it back, also when an assertion fails half-way. A spec that leaks again fails
     -- the run.
-    -- (isolated = "file" was kept off because spell_init_spec needed a downloaded spell file for "de"
-    -- in the developer's real stdpath('data'). That reason is gone: the spec now compiles a fixture
-    -- dictionary with :mkspell (TESTS/spell_init_spec.lua). Tried 2026-11-13: under "file" the suite
-    -- is green (50/50, ~12 s slower), but the surface gate goes red: API calls made inside the per-file
-    -- child editors are not counted, so api:language.translate_markdown drops from hit to missing. The
-    -- setting stays "none" until testing.nvim counts API hits in child editors.)
     state = "error",
   },
   guard_allow = {

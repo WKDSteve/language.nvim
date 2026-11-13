@@ -6,7 +6,7 @@
 -- gating flags.
 
 return function(H)
-  -- Every spec file shares one editor: put back what this one creates, also on failure (see H.tracked).
+  -- Put back what this spec creates, also on failure (see H.tracked): the state guard reports a leak.
   H.tracked(function()
     local language = require("language")
     local which_key = require("lib.nvim.bindings.keymap.which_key")
@@ -29,10 +29,10 @@ return function(H)
       return vim.tbl_extend("force", base, extra)
     end
 
-    -- A clean slate regardless of what other specs registered first: this spec
-    -- asserts on presence/absence of the three commands, and with isolated = "none"
-    -- all spec files share one editor, so it cannot rely on the order the runner
-    -- loads them in to guarantee none of them exist yet.
+    -- A clean slate regardless of what ran first: this spec asserts on
+    -- presence/absence of the three commands, and it must not depend on its
+    -- editor being fresh (isolated = "file" gives it one today; under "none"
+    -- all spec files would share one editor, in whatever order they load).
     for _, name in ipairs({ "Spellcheck", "Translate", "TranslateReplace", "TranslateOffice" }) do
       pcall(vim.api.nvim_del_user_command, name)
     end

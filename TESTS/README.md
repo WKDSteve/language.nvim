@@ -84,13 +84,14 @@ Adding one: write `TESTS/<name>_spec.lua` returning `function(H) ... end`, then
 run `scripts/test.sh` (it is discovered by its `_spec.lua` suffix). `H` is the harness — `eq`, `ok`, `falsy`, `contains`,
 `excludes`, `read`, `fixture`, `track` and `tracked`.
 
-All spec files share one editor, and testing.nvim's state guard runs at `error`
+Every spec file runs in an editor of its own (`isolated = "file"`), whose cases
+share it, and testing.nvim's state guard runs at `error`
 (`.testing.lua`): a spec that leaves a buffer, window, `:Command`, keymap,
 autocmd or changed option behind fails the run. A spec that calls `setup()` or
 creates any of these wraps its body in `H.tracked(function() ... end)` (pass
 `H.tracked({ options = { ... } }, function() ... end)` for global options it
 changes). It puts everything back when the body ends, also when an assertion
-fails half-way, so one red spec does not leave a dirty editor to the next file:
+fails half-way, so one red case does not leave a dirty editor to the next one:
 new buffers and windows are wiped, new autocmds deleted, and global keymaps and
 user commands return to their recorded state (added ones deleted, replaced or
 removed ones set again). `H.track()` is the same without the body: it returns

@@ -222,11 +222,11 @@ end
 --- removed ones set again from their recorded definition), and the named
 --- global options get their old value back.
 ---
---- The suite runs every spec file in one editor (`isolated = "none"`), so what
---- one file leaves (`setup()`'s :Commands, the language_nvim autocmds, scratch
---- buffers) would otherwise reach the next one; the state guard of
---- testing.nvim reports it as a leak. Prefer `H.tracked`, which also restores
---- when an assertion fails half-way.
+--- Every spec file runs in an editor of its own (`isolated = "file"`), but the
+--- cases of one file share it, so what one case leaves (`setup()`'s :Commands,
+--- the language_nvim autocmds, scratch buffers) would reach the next one, and
+--- the state guard of testing.nvim reports what a file leaves as a leak.
+--- Prefer `H.tracked`, which also restores when an assertion fails half-way.
 ---@param opts? { options?: string[] }
 ---@return fun()
 function H.track(opts)

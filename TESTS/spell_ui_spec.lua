@@ -8,7 +8,7 @@
 -- optional trouble.nvim.
 
 return function(H)
-  -- Every spec file shares one editor: put back what this one creates, also on failure (see H.tracked).
+  -- Put back what this spec creates, also on failure (see H.tracked): the state guard reports a leak.
   H.tracked(function()
     local list = require("language.spell.ui.list")
     local highlights = require("language.spell.ui.highlights")
