@@ -222,6 +222,23 @@ hover.nvim nothing registers and nothing is missing.
 `:Translate <lang> cword` is the same word into a language you name, in the
 popup. See docs/FEATURES/HOVER.md.
 
+                                                               *language-tree*
+A file or folder in a tree view (filetree.nvim)~
+`setup()` registers two actions at `lib.nvim.tree.registry`. The own tree of
+filetree.nvim (`adapter = "native"`) offers them on every file and folder, in
+its context menu and its action list:
+    language.check      `:Spellcheck path=<node>`
+    language.translate  `:Translate <lang> path=<node>`; the language is
+                        `translate.default_target`, else chosen from
+                        `translate.default_langs`
+    - The path of the node is taken as it is (blanks, `$`), not through the
+      `path=<p>` token of a command line.
+    - With several nodes marked the action runs on the first and says so.
+    - `tree = { key = { check = "<lhs>", translate = "<lhs>" } }` in
+      |language-config| also puts them on keys in the tree buffer;
+      `tree = false` does not offer them.
+Without a tree that reads the registry nothing changes.
+
 ==============================================================================
 5. SCOPING                                                   *language-scoping*
 
@@ -568,6 +585,7 @@ Defaults (abridged; see lua/language/config/DEFAULTS.lua): >lua
         files = { output = "suffix" },  -- :Translate cwd/path=<p> default
       },
       hover = true,     -- register the word-under-cursor translation with hover.nvim
+      tree = true,      -- check / translate on a node of a tree view, |language-tree|
       commands = true,
     })
 <

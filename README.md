@@ -42,6 +42,11 @@ timing lines, headers and tags stay byte-identical.
 > with HTTP 429 — the measurement is in
 > [docs/FEATURES/HOVER.md](docs/FEATURES/HOVER.md).
 >
+> **[filetree.nvim](https://github.com/WKDSteve/filetree.nvim)** — its own
+> tree offers "Spell check this" and "Translate this" on a file or a folder
+> ([spell](docs/FEATURES/SPELL.md#from-a-node-of-a-tree-view),
+> [translate](docs/FEATURES/TRANSLATE.md#from-a-node-of-a-tree-view)).
+>
 > **[sessions.nvim](https://github.com/WKDSteve/sessions.nvim)** — restores
 > your workspace by project and branch, so a spell session and its target
 > language come back where you left them instead of being set up again.

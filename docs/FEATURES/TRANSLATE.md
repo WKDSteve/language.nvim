@@ -654,6 +654,35 @@ error. The Lua API takes the same scopes:
 - **Module:** `translate/files.lua`
 - **Config:** `opts.translate.files.output`
 
+### From a node of a tree view
+
+`setup()` registers the action `language.translate` at
+`lib.nvim.tree.registry`: "Translate this file or folder". A tree that reads
+the registry (the own tree of
+[filetree.nvim](https://github.com/WKDSteve/filetree.nvim), `adapter =
+"native"`) offers it on every node that is a file or a folder on disk, in its
+context menu and its action list. It does what `:Translate <lang> path=<node>`
+does: a file is translated, a folder opens the chooser of its translatable
+files, both written per `translate.files.output`. The target language is
+`translate.default_target` when that is set; otherwise it is chosen from
+`translate.default_langs`, and a dismissed chooser translates nothing. The path
+is taken as it is, so a name with a blank or a `$` needs no quoting. With
+several nodes marked it translates the first and says so.
+
+```lua
+require("language").setup({
+  tree = { key = { translate = "<leader>st" } }, -- also on a key in the tree buffer
+  -- tree = false,                               -- not offered (this and "Spell check this")
+})
+```
+
+Without a tree that reads the registry the entry is never looked at.
+`require("language.integrations.tree").translate(path)` asks and translates the
+same way for any path.
+
+- **Module:** `integrations/tree.lua`
+- **Config:** `opts.tree` (default `true`), `opts.translate.default_target`
+
 ## Office documents (PowerPoint, Word)
 
 `:TranslateOffice <file> <lang>` translates a `.pptx` or `.docx` into a copy next to it

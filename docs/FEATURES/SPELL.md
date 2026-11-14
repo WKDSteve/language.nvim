@@ -30,6 +30,31 @@ issue) is reported rather than silently ignored.
 - **Usercmds:** `:Spellcheck [lang] [buffer|visible|cwd|path=<p>|clear|refresh]` — [user commands](../BINDINGS.md#user-commands)
 - **Config:** `opts.spell.default_scope` (default `"buffer"`), `opts.spell.ui.view` (`"picker"`/`"quickfix"`)
 
+### From a node of a tree view
+
+`setup()` registers the action `language.check` at `lib.nvim.tree.registry`:
+"Spell check this file or folder". A tree that reads the registry (the own
+tree of [filetree.nvim](https://github.com/WKDSteve/filetree.nvim), `adapter =
+"native"`) offers it on every node that is a file or a folder on disk, in its
+context menu and its action list. It does what `:Spellcheck path=<node>` does
+and opens the same review; the path is taken as it is, so a name with a blank
+or a `$` needs no quoting. With several nodes marked it checks the first and
+says so.
+
+```lua
+require("language").setup({
+  tree = { key = { check = "<leader>sc" } }, -- also on a key in the tree buffer
+  -- tree = false,                           -- not offered (this and "Translate this")
+})
+```
+
+Without a tree that reads the registry the entry is never looked at.
+`require("language.integrations.tree").check(path)` runs the same check for
+any path.
+
+- **Module:** `integrations/tree.lua`
+- **Config:** `opts.tree` (default `true`)
+
 ### Per-buffer scan cache
 
 Native scans are cached keyed by `changedtick`, so re-opening the panel or

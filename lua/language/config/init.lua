@@ -32,6 +32,21 @@ local cfg = require("lib.lua.config").new(defaults, {
       vim.validate("opts.keymaps", opts.keymaps, { "table", "boolean" })
       opts.keymaps = require("lib.nvim.normalize").normalize_switch_group(opts.keymaps)
     end
+    -- `tree`: a switch, or a table with the key(s) of the two tree actions.
+    if opts.tree ~= nil then
+      vim.validate("opts.tree", opts.tree, { "table", "boolean" })
+      if type(opts.tree) == "table" then
+        vim.validate("opts.tree.key", opts.tree.key, "table", true)
+        for _, action in ipairs({ "check", "translate" }) do
+          vim.validate(
+            "opts.tree.key." .. action,
+            (opts.tree.key or {})[action],
+            { "string", "table", "boolean" },
+            true
+          )
+        end
+      end
+    end
   end,
   notify = function(message)
     require("lib.nvim.notify").create("[language]").warn(message)

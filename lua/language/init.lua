@@ -38,6 +38,21 @@ function M.setup(opts)
     require("language.hover").setup()
   end)
 
+  -- "Spell check this" / "Translate this" on a node of a tree view: two entries
+  -- at lib.nvim's registry, read by filetree.nvim's own tree when there is one.
+  -- `tree = false` leaves them out.
+  pcall(function()
+    local integration = require("language.integrations.tree")
+    local tree = cfg.tree
+    if tree == false then
+      integration.unregister()
+    elseif type(tree) == "table" then
+      integration.register(tree)
+    else
+      integration.register()
+    end
+  end)
+
   if cfg.spell and cfg.spell.programming_dict then
     require("language.spell.programming_dict").ensure()
   end
@@ -64,7 +79,7 @@ end
 
 ---Run a spell-check session.
 ---@param lang?  string  e.g. "en", "de", "en,de"
----@param scope? string  "buffer"|"visible"|"cwd"|"path=<p>"|"clear"|"refresh"
+---@param scope? string|LanguageScope  "buffer"|"visible"|"cwd"|"path=<p>"|"clear"|"refresh", or a scope object (`{ kind = "path", path = p }` takes the path as it is)
 ---@return nil
 function M.spellcheck(lang, scope)
   require("language.spell").run(lang, scope)

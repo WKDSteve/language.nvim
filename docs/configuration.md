@@ -83,6 +83,13 @@ require("language").setup({
   },
 
   commands = true,           -- false = register no user commands at all
+
+  -- "Spell check this" / "Translate this" on a file or folder of a tree view
+  -- (the own tree of filetree.nvim reads them from lib.nvim's registry).
+  -- true: in the tree's menu and action list. A table also puts them on keys
+  -- in the tree buffer: { key = { check = "<leader>sc", translate = "<leader>st" } }.
+  -- false: not offered. See docs/FEATURES/SPELL.md and TRANSLATE.md.
+  tree = true,
   which_key = { enable = true },
 
   -- One-time "which CLI tools does this plugin want, and why" popup on

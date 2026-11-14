@@ -125,6 +125,7 @@
 ---@field commands   boolean
 ---@field keymaps    { enable: boolean }  # `false` (setup: `keymaps = false`) binds no keymap at all
 ---@field which_key  { enable: boolean }
+---@field tree       boolean|Language.Tree.Opts  # "Spell check this" / "Translate this" on a node of a tree view (default true: offered without a key), see language.integrations.tree
 ---@field deps_popup? boolean  # Show the lib.nvim.deps "declared tools" popup once, ever, on first setup() after install (default true; needs lib.nvim.deps — a no-op without it)
 
 --- What `setup()` accepts: the shape of `LanguageConfig` with every field
@@ -139,6 +140,7 @@
 ---@field commands?   boolean
 ---@field keymaps?    boolean|{ enable?: boolean }  # `false` binds no keymap at all
 ---@field which_key?  { enable: boolean }
+---@field tree?       boolean|Language.Tree.Opts  # "Spell check this" / "Translate this" on a node of a tree view (default true: offered without a key); `{ key = { check = "<lhs>", translate = "<lhs>" } }` also puts them on keys in the tree buffer, `false` does not offer them
 ---@field deps_popup? boolean  # Show the lib.nvim.deps "declared tools" popup once, ever, on first setup() after install (default true; needs lib.nvim.deps — a no-op without it)
 
 ---@class LanguageSpellOpts

@@ -165,6 +165,12 @@ local defaults = {
 
   commands = true,
 
+  -- "Spell check this" and "Translate this" on a node of a tree view (the own
+  -- tree of filetree.nvim reads them from lib.nvim's registry). true: in the
+  -- tree's menu and action list; { key = { check = "<lhs>", translate = "<lhs>" } }:
+  -- on those keys in the tree buffer as well; false: not offered.
+  tree = true,
+
   which_key = { enable = true },
 
   -- One-time "which CLI tools does this plugin want, and why" popup on
