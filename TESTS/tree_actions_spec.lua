@@ -191,6 +191,21 @@ return function(H)
       H.falsy(pcall(setup, { tree = "yes" }), "tree = <string> is refused by setup()")
       H.falsy(pcall(setup, { tree = { key = "<leader>sc" } }), "tree.key must name the actions")
       H.falsy(pcall(setup, { tree = { key = { check = 7 } } }), "a key that is none is refused")
+      -- `true` would reach the tree as a key; a list or a wrong name would bind nothing, silently
+      H.falsy(pcall(setup, { tree = { key = { check = true } } }), "a key of true is refused")
+      H.falsy(pcall(setup, { tree = { key = { translate = "" } } }), "an empty key is refused")
+      H.falsy(
+        pcall(setup, { tree = { key = { check = { "<leader>sc", 3 } } } }),
+        "a list with something that is no key is refused"
+      )
+      H.falsy(pcall(setup, { tree = { key = { check = {} } } }), "an empty list of keys is refused")
+      H.falsy(
+        pcall(setup, { tree = { key = { "<leader>sc" } } }),
+        "a list instead of the names of the actions is refused"
+      )
+      local named, why = pcall(setup, { tree = { key = { spell = "<leader>sc" } } })
+      H.falsy(named, "a name that is no action is refused")
+      H.contains(tostring(why), "spell", "... and the message names it")
 
       setup({ tree = false })
       H.eq(entry(tree.CHECK), nil, "tree = false takes check out")

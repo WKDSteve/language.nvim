@@ -36,14 +36,34 @@ local cfg = require("lib.lua.config").new(defaults, {
     if opts.tree ~= nil then
       vim.validate("opts.tree", opts.tree, { "table", "boolean" })
       if type(opts.tree) == "table" then
-        vim.validate("opts.tree.key", opts.tree.key, "table", true)
+        local key = opts.tree.key
+        vim.validate("opts.tree.key", key, "table", true)
+        -- Named by action. A list here (`key = { "<lhs>" }`, the form of a plugin with one tree
+        -- action) and a name that is no action would bind nothing without a word.
+        for name in pairs(key or {}) do
+          if name ~= "check" and name ~= "translate" then
+            error(
+              ("opts.tree.key: unknown action %s (check, translate)"):format(vim.inspect(name)),
+              0
+            )
+          end
+        end
         for _, action in ipairs({ "check", "translate" }) do
-          vim.validate(
-            "opts.tree.key." .. action,
-            (opts.tree.key or {})[action],
-            { "string", "table", "boolean" },
-            true
-          )
+          vim.validate("opts.tree.key." .. action, (key or {})[action], function(lhs)
+            if lhs == nil or lhs == false then
+              return true
+            elseif type(lhs) == "string" then
+              return lhs ~= ""
+            elseif type(lhs) == "table" and vim.islist(lhs) and #lhs > 0 then
+              for _, one in ipairs(lhs) do
+                if type(one) ~= "string" or one == "" then
+                  return false
+                end
+              end
+              return true
+            end
+            return false
+          end, "a key, a list of keys or false")
         end
       end
     end
