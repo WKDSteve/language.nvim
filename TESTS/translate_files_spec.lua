@@ -31,6 +31,29 @@ return function(H)
     table.sort(rels)
     H.eq(table.concat(rels, ","), "a.md,sub/b.md", "only .md files, node_modules skipped, sorted")
 
+    -- the walk never enters node_modules (pruned by `skip`, not dropped afterwards)
+    local real_dir = vim.fs.dir
+    local entered = {}
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.fs.dir = function(path, opts)
+      local inner = opts.skip
+      local o = vim.tbl_extend("force", opts, {
+        skip = function(sub)
+          local keep = inner == nil or inner(sub)
+          if keep then
+            entered[#entered + 1] = sub
+          end
+          return keep
+        end,
+      })
+      return real_dir(path, o)
+    end
+    local walked_ok = pcall(files.gather, dir, cfg)
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.fs.dir = real_dir
+    H.ok(walked_ok, "gather survives the wrapped walk")
+    H.eq(table.concat(entered, ","), "sub", "node_modules is pruned while walking, sub is entered")
+
     H.eq(
       #files.gather(dir, { files = { extensions = { "txt" } } }),
       0,
