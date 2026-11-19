@@ -3,7 +3,6 @@
 -- is its own case named `sheet:<id>`, the name `testing sheets report` finds the result by.
 -- @cache-inputs TESTS/sheets/
 ---@diagnostic disable: undefined-global
--- luacheck: read globals describe it
 
 local sheet = require("testing.sheet")
 local this = vim.fs.normalize(vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p"))
