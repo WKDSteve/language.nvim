@@ -3,6 +3,7 @@
 return {
   id = "language.thesaurus",
   feature = "language.thesaurus",
+  task = "language.nvim/abnahme-prozess-features-von-hand-echtes-netz-echte-clis-off",
   title = "language.nvim: 1<leader>th on a word replaces it with its first synonym from Datamuse",
   engine = "rpc",
   sizes = { { rows = 14, cols = 100 } },

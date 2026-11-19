@@ -4,6 +4,7 @@
 return {
   id = "language.spell-project",
   feature = "language.spell-project",
+  task = "language.nvim/abnahme-prozess-features-von-hand-echtes-netz-echte-clis-off",
   title = "language.nvim: :Spellcheck cwd runs typos over the project and lists the misspelling in the panel",
   engine = "rpc",
   sizes = { { rows = 16, cols = 100 } },

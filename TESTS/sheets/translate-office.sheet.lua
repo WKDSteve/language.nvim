@@ -4,6 +4,7 @@
 return {
   id = "language.translate-office",
   feature = "language.translate-office",
+  task = "language.nvim/abnahme-prozess-features-von-hand-echtes-netz-echte-clis-off",
   title = "language.nvim: :TranslateOffice report.docx DE writes the translated copy report.DE.docx next to it",
   engine = "rpc",
   sizes = { { rows = 14, cols = 100 } },

@@ -5,6 +5,7 @@
 return {
   id = "language.translate-clipboard",
   feature = "language.translate-clipboard",
+  task = "language.nvim/abnahme-prozess-features-von-hand-echtes-netz-echte-clis-off",
   title = "language.nvim: :Translate DE --output=clipboard buffer copies the translation to the system clipboard",
   engine = "rpc",
   sizes = { { rows = 14, cols = 100 } },

@@ -6,8 +6,9 @@ return {
   -- Lua module root of the project.
   plugin = "language",
   -- How the spec files are run: "auto" = sniffed per file, "h" = on the project's own TESTS/harness.lua,
-  -- "script" = a self-running script in its own process.
-  dialect = "h",
+  -- "script" = a self-running script in its own process. TESTS/sheets_spec.lua is busted style: each feature
+  -- sheet is a case of its own named `sheet:<id>`, the name `testing sheets report` finds its result by.
+  dialect = { ["TESTS/sheets_spec.lua"] = "busted", ["*"] = "h" },
   -- Dependencies (directory names) put on the runtimepath: $<NAME>_DIR, .deps/<name>, ../<name>,
   -- stdpath('data')/lazy/<name>.
   -- ui.nvim: the spell panel / item menu and the translate window open through ui.kit (specs in TESTS/).

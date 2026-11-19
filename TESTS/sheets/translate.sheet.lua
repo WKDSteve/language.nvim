@@ -4,6 +4,7 @@
 return {
   id = "language.translate",
   feature = "language.translate",
+  task = "language.nvim/abnahme-prozess-features-von-hand-echtes-netz-echte-clis-off",
   title = "language.nvim: :Translate DE --output=replace buffer sends the text to the engine and replaces it",
   engine = "rpc",
   sizes = { { rows = 14, cols = 100 } },

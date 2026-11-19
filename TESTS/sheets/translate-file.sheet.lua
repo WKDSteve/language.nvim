@@ -4,6 +4,7 @@
 return {
   id = "language.translate-file",
   feature = "language.translate-file",
+  task = "language.nvim/abnahme-prozess-features-von-hand-echtes-netz-echte-clis-off",
   title = "language.nvim: :Translate DE path=notes.md writes the translated notes.DE.md next to it",
   engine = "rpc",
   sizes = { { rows = 14, cols = 100 } },

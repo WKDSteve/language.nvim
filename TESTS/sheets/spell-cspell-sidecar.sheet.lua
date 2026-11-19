@@ -7,6 +7,7 @@
 return {
   id = "language.spell-cspell-sidecar",
   feature = "language.spell-cspell-sidecar",
+  task = "language.nvim/abnahme-prozess-features-von-hand-echtes-netz-echte-clis-off",
   title = "language.nvim: <leader>ss with the cspell sidecar starts node once and shows its findings in the panel",
   engine = "rpc",
   sizes = { { rows = 16, cols = 100 } },
