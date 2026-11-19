@@ -94,6 +94,46 @@ return function(H)
     "no tool: none"
   )
 
+  -- One Office file asks for its tools twice (unpack, then pack): `tar --version` runs once per tar, not per ask.
+  do
+    local real_system, real_executable, real_exepath = vim.system, vim.fn.executable, vim.fn.exepath
+    local probes, tar = 0, "/opt/one/tar"
+    vim.fn.executable = function(n)
+      return n == "tar" and 1 or 0
+    end
+    vim.fn.exepath = function(n)
+      return n == "tar" and tar or ""
+    end
+    vim.system = function(argv)
+      if argv[1] == "tar" and argv[2] == "--version" then
+        probes = probes + 1
+      end
+      return {
+        wait = function()
+          return { code = 0, signal = 0, stdout = "bsdtar 3.7.2 - libarchive 3.7.2\n" }
+        end,
+      }
+    end
+    local ok, err = pcall(function()
+      zip._forget_tar()
+      local first, second = zip.tools(), zip.tools()
+      H.eq(
+        first.unpack .. first.pack .. second.unpack .. second.pack,
+        "tartartartar",
+        "bsdtar both times"
+      )
+      H.eq(probes, 1, "tar --version ran once for both asks")
+      tar = "/opt/other/tar"
+      H.eq(zip.tools().pack, "tar", "another tar on the PATH")
+      H.eq(probes, 2, "is probed again")
+    end)
+    vim.system, vim.fn.executable, vim.fn.exepath = real_system, real_executable, real_exepath
+    zip._forget_tar()
+    if not ok then
+      error(err, 0)
+    end
+  end
+
   H.eq(office.output_path("C:/x/a.b.docx", "de"), "C:/x/a.b.de.docx", "output name")
 
   -- the round trip --------------------------------------------------------------

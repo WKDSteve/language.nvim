@@ -140,13 +140,34 @@ function M.inspect_file(path, limits)
 end
 
 ---@internal
+---What `tar --version` answered, per resolved `tar` program. The probe waits for the process, and one Office file
+---asks twice (the tool to unpack, then the one to pack): `testing perf` measured two blocking starts within 300 ms.
+---Keyed by the path, so a `tar` that appears on the PATH later is probed again.
+---@type table<string, boolean>
+local bsd_by_path = {}
+
+---@internal
 ---GNU tar cannot read or write a ZIP archive (and takes `E:` for a host name); only bsdtar can.
 ---@return boolean
 local function tar_is_bsd()
+  local path = vim.fn.exepath("tar")
+  if bsd_by_path[path] ~= nil then
+    return bsd_by_path[path]
+  end
   local ok, res = pcall(function()
     return vim.system({ "tar", "--version" }, { text = true }):wait(5000)
   end)
-  return ok and res.code == 0 and (res.stdout or ""):find("bsdtar", 1, true) ~= nil
+  if not ok or type(res) ~= "table" or res.signal ~= 0 then
+    return false -- no answer (a spawn error, a timeout): asked again next time
+  end
+  bsd_by_path[path] = res.code == 0 and (res.stdout or ""):find("bsdtar", 1, true) ~= nil
+  return bsd_by_path[path]
+end
+
+---@internal
+---Forget what `tar --version` answered (specs).
+function M._forget_tar()
+  bsd_by_path = {}
 end
 
 ---The tools to use, in order of preference.
