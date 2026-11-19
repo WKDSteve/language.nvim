@@ -31,6 +31,23 @@ A sibling wins over the plugin-manager copy on purpose: that one is often older
 than the working checkout, and testing against a stale lib.nvim gives
 misleading failures.
 
+## Feature sheets
+
+`TESTS/sheets/` holds the feature sheets: each drives one functionality the
+way a user does (the command or key in a real child editor) and checks what
+the user sees. `TESTS/sheets/features.lua` is the catalog of the
+functionalities that start a process; `testing perf` measures those starts
+through the sheets. The network and the CLIs that are not on every machine
+(Google, Datamuse, typos, a global cspell) are answered by
+`fixtures/respond.lua`, wired in by `fixtures/stand_ins.lua`; the ZIP tools,
+node and the cspell sidecar script run for real.
+
+```
+testing sheets run --all                     # every sheet
+testing sheets run --sheet language.translate
+testing perf .                               # the process starts of the sheets
+```
+
 ## The specs
 
 | | |
